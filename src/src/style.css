@@ -1,0 +1,50 @@
+/* styles.css */
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #003366;
+  }
+  
+  .search-bar {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 15px;
+    width: 80%;
+    max-width: 400px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+  }
+  
+  .material-card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 600px;
+  }
+  
+  .material-card h2 {
+    margin-top: 0;
+    color: #005599;
+  }
+  
+  .material-properties {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .material-properties li {
+    padding: 4px 0;
+    border-bottom: 1px solid #eee;
+  }
+  

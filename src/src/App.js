@@ -1,49 +1,91 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
+import './styles.css';
+
+const materialFiles = [
+  'aluminum_7075.json',
+  'titanium_6al4v.json'
+];
 
 function App() {
   const [materials, setMaterials] = useState([]);
-  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    const jsonUrl = process.env.PUBLIC_URL + "/aluminum_7075.json"; // Ensure correct path
-    console.log("Fetching JSON from:", jsonUrl);
+    document.body.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
 
-    fetch(jsonUrl)
-      .then((response) => {
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        return response.json(); // Parse JSON directly
-      })
-      .then((data) => {
-        console.log("Parsed JSON:", data);
-        setMaterials([data]); // Ensure data is structured correctly
-      })
-      .catch((error) => {
-        console.error("Error loading JSON:", error);
-        setError(error.message);
-      });
+  useEffect(() => {
+    const loadMaterials = async () => {
+      const loadedMaterials = [];
+      for (const file of materialFiles) {
+        try {
+          const res = await fetch(`/${file}`);
+          const data = await res.json();
+          loadedMaterials.push(data);
+        } catch (err) {
+          console.error(`Error loading ${file}:`, err);
+        }
+      }
+      setMaterials(loadedMaterials);
+    };
+
+    loadMaterials();
   }, []);
 
-  console.log("Materials state:", materials); // Debugging output
+  const filteredMaterials = materials.filter(mat =>
+    mat.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div>
       <h1>Aerospace Material Database</h1>
-      {error && <p style={{ color: "red" }}>Error: {error}</p>}
-      {!error && materials.length === 0 && <p>Loading materials...</p>}
-      {!error && materials.length > 0 && (
-        <ul>
-          {materials.map((material, index) => (
-            <li key={index}>
-              <strong>{material.name}</strong> - {material.category}
-              <ul>
-                <li>Density: {material.density}</li>
-                <li>Yield Strength: {material.yield_strength}</li>
-                <li>Thermal Conductivity: {material.thermal_conductivity}</li>
-              </ul>
-            </li>
-          ))}
-        </ul>
-      )}
+
+      <input
+        type="text"
+        className="search-bar"
+        placeholder="Search for a material..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
+      <div className="category-buttons">
+        <button className="category-button" onClick={() => alert('Metals')}>
+          Metals
+        </button>
+        <button className="category-button" onClick={() => alert('Ceramics')}>
+          Ceramics
+        </button>
+        <button className="category-button" onClick={() => alert('Composites')}>
+          Composites
+        </button>
+      </div>
+
+      {filteredMaterials.map((material, index) => (
+        <div key={index} className="material-card">
+          <h2>{material.name}</h2>
+          {material.properties ? (
+            <ul className="material-properties">
+              {Object.entries(material.properties).map(([prop, val]) => (
+                <li key={prop}><strong>{prop}:</strong> {val}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>No properties available for this material.</p>
+          )}
+        </div>
+      ))}
+
+      <div className="toggle-container">
+        <label className="switch">
+          <input 
+            type="checkbox" 
+            checked={darkMode} 
+            onChange={() => setDarkMode(!darkMode)} 
+          />
+          <span className="slider"></span>
+        </label>
+      </div>
     </div>
   );
 }
