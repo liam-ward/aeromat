@@ -39,7 +39,7 @@ function App() {
 
   return (
     <div>
-      <h1>Aerospace Material Database</h1>
+      <h1>Aerospace Materials Database</h1>
 
       <input
         type="text"
